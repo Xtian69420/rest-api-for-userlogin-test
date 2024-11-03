@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User API</title>
+</head>
+<body>
+    <h1>User Registration and Login</h1>
+    <div>
+        <h2>Register</h2>
+        <input type="text" id="reg-username" placeholder="Username">
+        <input type="password" id="reg-password" placeholder="Password">
+        <button onclick="registerUser()">Register</button>
+    </div>
+    <div>
+        <h2>Login</h2>
+        <input type="text" id="log-username" placeholder="Username">
+        <input type="password" id="log-password" placeholder="Password">
+        <button onclick="loginUser()">Login</button>
+    </div>
+    <div>
+        <h2>Get Users</h2>
+        <button onclick="getUsers()">Get Users</button>
+        <pre id="user-list"></pre>
+    </div>
+
+    <script>
+        async function registerUser() {
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            alert(data.message || data.error);
+        }
+
+        async function loginUser() {
+            const username = document.getElementById('log-username').value;
+            const password = document.getElementById('log-password').value;
+
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            if (data.token) {
+                localStorage.setItem('token', data.token); 
+                alert('Login successful!');
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function getUsers() {
+            console.log('clicked!');
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:3000/users', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+            document.getElementById('user-list').textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>

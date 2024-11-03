@@ -29,7 +29,8 @@
         async function registerUser() {
             const username = document.getElementById('reg-username').value;
             const password = document.getElementById('reg-password').value;
-
+            const loadingIndicator = document.getElementById('log-loading');
+            loadingIndicator.style.display = 'inline'; // Show loading indicator
             const response = await fetch('https://rest-api-for-userlogin-test.onrender.com/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -37,13 +38,15 @@
             });
 
             const data = await response.json();
+            loadingIndicator.style.display = 'none';
             alert(data.message || data.error);
         }
 
         async function loginUser() {
             const username = document.getElementById('log-username').value;
             const password = document.getElementById('log-password').value;
-
+            const loadingIndicator = document.getElementById('log-loading');
+            loadingIndicator.style.display = 'inline'; // Show loading indicator
             const response = await fetch('https://rest-api-for-userlogin-test.onrender.com/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -51,6 +54,7 @@
             });
 
             const data = await response.json();
+            loadingIndicator.style.display = 'none';
             if (data.token) {
                 localStorage.setItem('token', data.token); 
                 alert('Login successful!');
@@ -62,6 +66,9 @@
         async function getUsers() {
             console.log('clicked!');
             const token = localStorage.getItem('token');
+            const loadingIndicator = document.getElementById('users-loading');
+            loadingIndicator.style.display = 'inline';
+            
             const response = await fetch('https://rest-api-for-userlogin-test.onrender.com/users', {
                 method: 'GET',
                 headers: {
@@ -71,6 +78,7 @@
 
             const data = await response.json();
             document.getElementById('user-list').textContent = JSON.stringify(data, null, 2);
+            loadingIndicator.style.display = 'none';
         }
     </script>
 </body>

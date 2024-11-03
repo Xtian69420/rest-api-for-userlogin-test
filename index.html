@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User API</title>
+    <style>
+        .loading {
+            display: none;
+            color: blue;
+        }
+    </style>
 </head>
 <body>
     <h1>User Registration and Login</h1>
@@ -12,16 +18,19 @@
         <input type="text" id="reg-username" placeholder="Username">
         <input type="password" id="reg-password" placeholder="Password">
         <button onclick="registerUser()">Register</button>
+        <span id="reg-loading" class="loading">Loading...</span>
     </div>
     <div>
         <h2>Login</h2>
         <input type="text" id="log-username" placeholder="Username">
         <input type="password" id="log-password" placeholder="Password">
         <button onclick="loginUser()">Login</button>
+        <span id="log-loading" class="loading">Loading...</span>
     </div>
     <div>
         <h2>Get Users</h2>
         <button onclick="getUsers()">Get Users</button>
+        <span id="users-loading" class="loading">Loading...</span>
         <pre id="user-list"></pre>
     </div>
 
@@ -29,8 +38,9 @@
         async function registerUser() {
             const username = document.getElementById('reg-username').value;
             const password = document.getElementById('reg-password').value;
-            const loadingIndicator = document.getElementById('log-loading');
+            const loadingIndicator = document.getElementById('reg-loading');
             loadingIndicator.style.display = 'inline'; // Show loading indicator
+
             const response = await fetch('https://rest-api-for-userlogin-test.onrender.com/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -38,8 +48,8 @@
             });
 
             const data = await response.json();
-            loadingIndicator.style.display = 'none';
             alert(data.message || data.error);
+            loadingIndicator.style.display = 'none'; // Hide loading indicator
         }
 
         async function loginUser() {
@@ -47,6 +57,7 @@
             const password = document.getElementById('log-password').value;
             const loadingIndicator = document.getElementById('log-loading');
             loadingIndicator.style.display = 'inline'; // Show loading indicator
+
             const response = await fetch('https://rest-api-for-userlogin-test.onrender.com/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -54,7 +65,7 @@
             });
 
             const data = await response.json();
-            loadingIndicator.style.display = 'none';
+            loadingIndicator.style.display = 'none'; // Hide loading indicator
             if (data.token) {
                 localStorage.setItem('token', data.token); 
                 alert('Login successful!');
@@ -67,8 +78,8 @@
             console.log('clicked!');
             const token = localStorage.getItem('token');
             const loadingIndicator = document.getElementById('users-loading');
-            loadingIndicator.style.display = 'inline';
-            
+            loadingIndicator.style.display = 'inline'; // Show loading indicator
+
             const response = await fetch('https://rest-api-for-userlogin-test.onrender.com/users', {
                 method: 'GET',
                 headers: {
@@ -78,7 +89,7 @@
 
             const data = await response.json();
             document.getElementById('user-list').textContent = JSON.stringify(data, null, 2);
-            loadingIndicator.style.display = 'none';
+            loadingIndicator.style.display = 'none'; // Hide loading indicator
         }
     </script>
 </body>
